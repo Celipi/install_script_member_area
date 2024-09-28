@@ -33,7 +33,7 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 # 6. Clonar o repositório do seu projeto (opcional, se o usuário ainda não tiver o projeto)
 echo "Baixando App"
-git clone https://github.com/felipetadeudev/teste-sh.git
+git clone https://github.com/Celipi/member_area.git
 
 # 7. Criar a rede traefik_proxy (se não existir)
 echo "Verificando se a rede traefik_proxy existe..."
@@ -45,7 +45,7 @@ else
 fi
 
 # 8. Acessar o diretório do projeto
-cd teste-sh
+cd member_area
 sudo chmod +x wait-for-postgres.sh
 
 # 8. Criar o diretório letsencrypt (para os certificados SSL)
