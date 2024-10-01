@@ -1,17 +1,5 @@
 #!/bin/bash
 
-# Exibir o texto "MEMBER AREA" em formato grande
-figlet "MEMBER AREA"
-
-# Animação de "preparando"
-printf "Preparando"
-while true; do
-  for i in . .. ...; do
-    printf " %s \r" "$i"
-    sleep 0.5
-  done
-done &
-
 # Instalar dependências
 yes | sudo apt-get update > /dev/null 2>&1
 yes | sudo apt-get install -y \
@@ -22,9 +10,28 @@ yes | sudo apt-get install -y \
     software-properties-common \
     figlet > /dev/null 2>&1
 
+# Exibir o texto "MEMBER AREA" em formato grande
+figlet "MEMBRIUMWL"
+
+# Função para exibir animações
+animate() {
+  local message=$1
+  printf "$message"
+  while true; do
+    for i in . .. ...; do
+      printf " %s \r" "$i"
+      sleep 0.5
+    done
+  done
+}
+
+# Animação de "preparando"
+animate "Preparando" &
+
 # Finalizar a animação de "preparando"
 sleep 1
 kill %1
+
 
 # Adicionar chave GPG oficial do Docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - > /dev/null 2>&1
@@ -44,13 +51,7 @@ sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.7/docker
 sudo chmod +x /usr/local/bin/docker-compose > /dev/null 2>&1
 
 # Animação de "baixando"
-printf "Baixando"
-while true; do
-  for i in . .. ...; do
-    printf " %s \r" "$i"
-    sleep 0.5
-  done
-done &
+animate "Baixando" &
 
 # Baixar o docker-compose.yml
 curl -L https://raw.githubusercontent.com/Celipi/member_area/main/docker-compose.yml -o docker-compose.yml > /dev/null 2>&1
@@ -82,13 +83,7 @@ read EMAIL
 sed -i "s/--certificatesresolvers.letsencrypt.acme.email=seu_email@example.com/--certificatesresolvers.letsencrypt.acme.email=$EMAIL/g" docker-compose.yml
 
 # Animação de "iniciando"
-printf "Iniciando"
-while true; do
-  for i in . .. ...; do
-    printf " %s \r" "$i"
-    sleep 0.5
-  done
-done &
+animate "Iniciando" &
 
 # Iniciar a aplicação com o Docker Compose
 sudo docker-compose up -d > /dev/null 2>&1
