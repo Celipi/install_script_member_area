@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exibir o texto "MEMBER AREA" em formato grande
+figlet "MEMBER AREA"
+
 # Instalar dependências
 sudo apt-get update
 sudo apt-get install -y \
@@ -26,9 +29,6 @@ sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 # Instalar o Docker Compose
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
-
-# Exibir o texto "MEMBER AREA" em formato grande
-figlet "MEMBER AREA"
 
 # Animação de "preparando"
 echo -n "Preparando"
