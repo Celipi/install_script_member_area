@@ -1,27 +1,26 @@
 #!/bin/bash
 
+# Exibir o texto "MEMBER AREA" em formato grande
+figlet "MEMBER AREA"
+
+# Animação de "preparando"
+printf "Preparando"
+while true; do
+  for i in . .. ...; do
+    printf " %s \r" "$i"
+    sleep 0.5
+  done
+done &
+
 # Instalar dependências
-sudo apt-get update > /dev/null 2>&1
-sudo apt-get install -y \
+yes | sudo apt-get update > /dev/null 2>&1
+yes | sudo apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
     software-properties-common \
     figlet > /dev/null 2>&1
-
-# Exibir o texto "MEMBER AREA" em formato grande
-figlet "MEMBER AREA"
-
-# Animação de "preparando"
-echo -n "Preparando"
-while true; do
-  for i in . .. ...; do
-    echo -n "$i"
-    sleep 0.5
-    echo -ne "\r"
-  done
-done &
 
 # Finalizar a animação de "preparando"
 sleep 1
@@ -31,26 +30,25 @@ kill %1
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - > /dev/null 2>&1
 
 # Adicionar repositório do Docker
-sudo add-apt-repository \
+yes | sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
    stable" > /dev/null 2>&1
 
 # Instalar o Docker Engine
-sudo apt-get update > /dev/null 2>&1
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
+yes | sudo apt-get update > /dev/null 2>&1
+yes | sudo apt-get install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
 
 # Instalar o Docker Compose
 sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose > /dev/null 2>&1
 sudo chmod +x /usr/local/bin/docker-compose > /dev/null 2>&1
 
 # Animação de "baixando"
-echo -n "Baixando"
+printf "Baixando"
 while true; do
   for i in . .. ...; do
-    echo -n "$i"
+    printf " %s \r" "$i"
     sleep 0.5
-    echo -ne "\r"
   done
 done &
 
@@ -84,12 +82,11 @@ read EMAIL
 sed -i "s/--certificatesresolvers.letsencrypt.acme.email=seu_email@example.com/--certificatesresolvers.letsencrypt.acme.email=$EMAIL/g" docker-compose.yml
 
 # Animação de "iniciando"
-echo -n "Iniciando"
+printf "Iniciando"
 while true; do
   for i in . .. ...; do
-    echo -n "$i"
+    printf " %s \r" "$i"
     sleep 0.5
-    echo -ne "\r"
   done
 done &
 
