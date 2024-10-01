@@ -1,34 +1,36 @@
 #!/bin/bash
 
 # Exibir o texto "MEMBER AREA" em formato grande
-figlet "MEMBER AREA"
 
 # Instalar dependências
-sudo apt-get update
+sudo apt-get update > /dev/null 2>&1
 sudo apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
     gnupg-agent \
     software-properties-common \
-    figlet
+    figlet > /dev/null 2>&1
+
+figlet "MEMBRIUMWL"
 
 # Adicionar chave GPG oficial do Docker
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add - > /dev/null 2>&1
 
 # Adicionar repositório do Docker
 sudo add-apt-repository \
    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
    $(lsb_release -cs) \
-   stable"
+   stable" > /dev/null 2>&1   
+
 
 # Instalar o Docker Engine
-sudo apt-get update
-sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+sudo apt-get update > /dev/null 2>&1
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io > /dev/null 2>&1
 
 # Instalar o Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose > /dev/null 2>&1
+sudo chmod +x /usr/local/bin/docker-compose > /dev/null 2>&1
 
 # Animação de "preparando"
 echo -n "Preparando"
