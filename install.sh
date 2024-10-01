@@ -20,25 +20,23 @@ run_silently() {
     "$@" > /dev/null 2>&1
 }
 
-# Instalação inicial das dependências básicas, incluindo figlet
-animate_dots "Preparando" 10 &
+# Instalação inicial das dependências básicas, incluindo figlet e Docker
+animate_dots "Preparando" 30 &
 run_silently sudo apt-get update
 run_silently sudo apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common figlet
-wait
 
-# Agora que figlet está instalado, exibir o texto "MEMBER AREA" em formato grande
-clear  # Limpa a tela antes de exibir o texto grande
-figlet "MEMBER AREA"
-
-# Continuar com a instalação do Docker e outras dependências
-animate_dots "Instalando Docker" 15 &
+# Instalação automatizada do Docker
 run_silently curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-run_silently sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+run_silently sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" -y
 run_silently sudo apt-get update
 run_silently sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 run_silently sudo curl -L "https://github.com/docker/compose/releases/download/v2.29.7/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 run_silently sudo chmod +x /usr/local/bin/docker-compose
 wait
+
+# Agora que figlet está instalado, exibir o texto "MEMBER AREA" em formato grande
+clear  # Limpa a tela antes de exibir o texto grande
+figlet "MEMBRIUMWL"
 
 # Download do docker-compose.yml
 animate_dots "Baixando" 5 &
