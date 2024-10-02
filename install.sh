@@ -26,13 +26,14 @@ run_silently() {
 run_silently sudo apt-get update
 run_silently sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release figlet
 
-# Agora que figlet está instalado, exibir o texto "MEMBER AREA" em formato grande
+# Agora que figlet está instalado, exibir o texto "MEMBRIUM WL" em formato grande
 figlet "MEMBRIUM WL"
 animate_dots "Preparando" 30 &
 
 # Instalação automatizada do Docker
 run_silently sudo mkdir -p /etc/apt/keyrings
-run_silently curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+# Usar a opção -y para sobrescrever automaticamente o arquivo existente
+run_silently sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg
 run_silently sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo \
@@ -40,7 +41,8 @@ echo \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 run_silently sudo apt-get update
-run_silently sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+# Usar a opção -y para aceitar automaticamente a instalação
+run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
 # Instalação do Docker Compose mais recente
 DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d'"' -f4)
