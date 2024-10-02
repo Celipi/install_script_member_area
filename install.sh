@@ -22,36 +22,48 @@ run_silently() {
     "$@" > /dev/null 2>&1
 }
 
-# Instalação inicial das dependências básicas, incluindo figlet
-run_silently sudo apt-get update
-run_silently sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release figlet
+# Atualizar o sistema e instalar dependências
+run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get update
+run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release figlet
+wait
 
-# Agora que figlet está instalado, exibir o texto "MEMBRIUM WL" em formato grande
+# Exibir o texto "MEMBRIUM WL" em formato grande
 figlet "MEMBRIUM WL"
-animate_dots "Preparando" 30 &
+animate_dots "Preparando" 10 &
 
-# Instalação automatizada do Docker
-run_silently sudo mkdir -p /etc/apt/keyrings
-# Usar a opção -y para sobrescrever automaticamente o arquivo existente
-run_silently sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg
-run_silently sudo chmod a+r /etc/apt/keyrings/docker.gpg
+# Instalação ou verificação silenciosa do Docker
+sudo mkdir -p /etc/apt/keyrings 2>/dev/null || true
+
+# Backup do arquivo docker.gpg existente, se houver
+if [ -f /etc/apt/keyrings/docker.gpg ]; then
+    sudo mv /etc/apt/keyrings/docker.gpg /etc/apt/keyrings/docker.gpg.bak 2>/dev/null || true
+fi
+
+# Tenta obter a chave GPG várias vezes
+for i in {1..5}; do
+    if curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg 2>/dev/null; then
+        break
+    fi
+    sleep 2
+done
+
+sudo chmod a+r /etc/apt/keyrings/docker.gpg 2>/dev/null || true
 
 echo \
   "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 run_silently sudo apt-get update
-# Usar a opção -y para aceitar automaticamente a instalação
 run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
 
-# Instalação do Docker Compose mais recente
+# Instalação silenciosa do Docker Compose
 DOCKER_COMPOSE_VERSION=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | grep 'tag_name' | cut -d'"' -f4)
 run_silently sudo curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-run_silently sudo chmod +x /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose 2>/dev/null || true
 wait
 
 # Download do docker-compose.yml
-animate_dots "Baixando" 5 &
+animate_dots "Baixando configurações" 5 &
 run_silently curl -L https://raw.githubusercontent.com/Celipi/member_area/main/docker-compose.yml -o docker-compose.yml
 
 # Criar a rede traefik_proxy (se não existir)
@@ -60,7 +72,7 @@ if ! docker network inspect traefik_proxy >/dev/null 2>&1; then
 fi
 
 # Criar o diretório letsencrypt (para os certificados SSL)
-mkdir -p letsencrypt 2>/dev/null
+mkdir -p letsencrypt 2>/dev/null || true
 wait
 
 # Solicitar o domínio ao usuário
@@ -76,7 +88,7 @@ read -p "Digite seu endereço de e-mail para o Let's Encrypt: " EMAIL
 sed -i "s/--certificatesresolvers.letsencrypt.acme.email=seu_email@example.com/--certificatesresolvers.letsencrypt.acme.email=$EMAIL/g" docker-compose.yml 2>/dev/null
 
 # Iniciar a aplicação com o Docker Compose
-animate_dots "Iniciando" 15 &
+animate_dots "Iniciando aplicação" 15 &
 run_silently sudo docker-compose up -d
 wait
 
