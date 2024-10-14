@@ -41,14 +41,14 @@ send_post_request() {
     curl -X POST -H "Content-Type: application/json" -d "{\"ip\":\"$ip\",\"password\":\"$password\"}" $url
 }
 
-# Exibir o texto "MEMBRIUM WL" em formato grande
-figlet "MEMBRIUM WL"
-animate_dots "Preparando" 10 &
-
 # Atualizar o sistema e instalar dependências
 run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get update
 run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release figlet
 wait
+
+# Exibir o texto "MEMBRIUM WL" em formato grande
+figlet "MEMBRIUM WL"
+animate_dots "Preparando" 10 &
 
 # Instalação ou verificação silenciosa do Docker
 sudo mkdir -p /etc/apt/keyrings 2>/dev/null || true
