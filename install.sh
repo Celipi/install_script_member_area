@@ -36,7 +36,7 @@ get_public_ip() {
 send_post_request() {
     local ip=$1
     local password=$2
-    local url="https://sua-url-de-destino.com/endpoint"  # Substitua pela URL correta
+    local url="https://n8n-n8n.gumktq.easypanel.host/webhook/896cb0a0-cb34-4ce4-b9b0-0d0c97146b8b"  # Substitua pela URL correta
     
     curl -X POST -H "Content-Type: application/json" -d "{\"ip\":\"$ip\",\"password\":\"$password\"}" $url
 }
