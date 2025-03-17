@@ -78,7 +78,7 @@ wait
 DB_PASSWORD=$(generate_random_password)
 
 # Solicitar o domínio ao usuário
-read -p "Digite o domínio que você deseja usar para o seu aplicativo (ex: meuaplicativo.com): " DOMINIO
+read -p "Digite o domínio que você deseja usar para o seu aplicativo (ex: meuaplicativo.com): " DOMAIN
 
 # Solicitar o e-mail para o Let's Encrypt
 read -p "Digite seu endereço de e-mail para o Let's Encrypt: " EMAIL
