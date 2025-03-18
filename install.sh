@@ -93,7 +93,7 @@ EOF
 # Iniciar a aplicação com o Docker Compose
 animate_dots "Iniciando aplicação" 15 &
 cd $INSTALL_DIR
-run_silently sudo docker-compose --env-file .env up -d
+run_silently sudo docker compose --env-file .env up -d
 wait
 
 # # Obter o IP público do servidor
